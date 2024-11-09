@@ -1,0 +1,23 @@
+{% extends "admin/challenges/create.html" %}
+
+
+{% block value %}
+<div class="form-group">
+	<label for="value">Value<br>
+		<small class="form-text text-muted">
+			This is how many points are rewarded for solving this challenge.
+		</small>
+	</label>
+	<input type="number" class="form-control" name="value" placeholder="Enter value" required>
+
+</div>
+<div class="alert alert-secondary" role="alert">
+	You will be prompted to select a flag type once you click 'Create'. Select the 'static' type and enter the flag variable name.
+</div>
+
+
+{% endblock %}
+
+{% block type %}
+<input type="hidden" value="personal" name="type" id="chaltype">
+{% endblock %}

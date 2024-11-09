@@ -1,0 +1,86 @@
+{% extends "admin/base.html" %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block content %}
+	<div class="jumbotron">
+		<div class="container">
+			<h1>Personal Flag Importer</h1>
+
+			<div class="d-flex justify-content-center align-items-center vh-5 mt-4">
+				<div class="d-flex">
+					<h5 class="mr-5">Import</h5>
+					<a href="{{ url_for('individual_flag_importer.individual_flag_importer_users_handler') }}" class="mr-5"><h5>Users</h5></a>
+					<a href="#"><h5>Cheaters</h5></a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 offset-md-3">
+				<form id="upload_individual_flags" method="POST" action="#" enctype="multipart/form-data">
+					<div class="mb-3">
+						<label for="jsonFile" class="form-label">Flag file <i>(.json)</i>:</label>
+        		<input type="file" class="form-control no-border" id="jsonFile" name="jsonFile" accept=".json" {% if blockUploadFlagsButton %}disabled{% endif %}  required>
+					</div>
+					<input id="nonce" name='nonce' type='hidden' value="{{ nonce }}">
+					<div class="float-right">
+						
+						{% if blockUploadFlagsButton %}
+						<button type="submit" class="btn btn-secondary text-center" disabled>Upload</button>
+						{% else %}
+						<button type="submit" class="btn btn-success text-center">Upload</button>
+						{% endif %}
+
+					</div>
+				</form>
+				{% if blockUploadFlagsButton %}
+					<p class="text-danger">Flag uploading is disabled, no personal challenges with flag variables exist.</p>
+				{% endif %}
+				<p class="text-success">{{ uploadSuccessMsg }}</p>
+				<p class="text-danger">{{ errMsg }}</p>
+			</div>
+		</div>		
+
+		{% if notImportedButRequired | length > 0 %}
+			<hr>
+			<p class="text-danger">The following flags are required (defined in personal challenge/s), but not imported (critical error):</p>
+			<ul>
+			{% for flag in notImportedButRequired %}
+				<li><i>{{ flag }}</i></li>
+			{% endfor %}
+			</ul>
+	{% endif %}
+
+		{% if importedButNotRequiredFlags | length > 0 %}
+				<hr>
+				<p class="text-warning">Attempted to import the following flags, but they don't seem to exist in any personal challenge (ignored):</p>
+				<ul>
+				{% for flag in importedButNotRequiredFlags %}
+					<li><i>{{ flag }}</i></li>
+				{% endfor %}
+				</ul>
+			{% endif %}
+
+		{% if nonExistingUsers | length > 0 %}
+				<hr>
+				<p class="text-warning">Attempted to import flags for the following users, but they do not exist in CTFd (ignored):</p>
+				<ul>
+				{% for user in nonExistingUsers %}
+					<li><i>{{ user }}</i></li>
+				{% endfor %}
+				</ul>
+			{% endif %}
+
+
+	</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+</script>
+{% endblock %}

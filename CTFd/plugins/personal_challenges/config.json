@@ -1,0 +1,4 @@
+{
+  "name": "Individual Flag Importer",
+  "route": "/admin/plugins/flag_importer/import"
+}

@@ -1,0 +1,99 @@
+{% extends "admin/base.html" %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block content %}
+	<div class="jumbotron">
+		<div class="container">
+			<h1>Personal Flag Importer</h1>
+
+			<div class="d-flex justify-content-center align-items-center vh-5 mt-4">
+				<div class="d-flex">
+					<a href="{{ url_for('individual_flag_importer.individual_flag_importer_handler') }}"><h5 class="mr-5">Import</h5></a>
+					<h5 class="mr-5">Users</h5>
+					<a href="#"><h5>Cheaters</h5></a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+  {% if usersWithFlagsList|length > 0 %}
+	<div class="d-flex flex-column align-items-center justify-content-center h-100">
+		<h4> Users <span class="text-success">with</span> flags</h4>
+
+    <div class="container">
+      <table class="table table-bordered table-striped">
+          <thead class="thead-light">
+              <tr>
+                  <th class="text-center align-middle">User ID</th>
+                  <th class="text-center align-middle">User Name</th>
+                  <th class="text-center align-middle">User Email</th>
+                  <th class="text-center align-middle">Flag Contents</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for user in usersWithFlagsList %}
+                  <tr>
+                      <td class="text-center align-middle">{{ user.user_id }}</td>
+                      <td class="text-center align-middle">{{ user.user_name }}</td>
+                      <td class="text-center align-middle">{{ user.user_email }}</td>
+                      <td class="text-center align-middle">
+                          {% for flag in user.user_flags %}
+                              <p class="{% if flag.solved %}text-success{% else %}text-danger{% endif %}">
+                                  {{ flag.contents }}
+                              </p>
+                          {% endfor %}
+                      </td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    </div>
+
+    <form id="deleteUserFlagsForm" action="{{ url_for('individual_flag_importer.individual_flag_importer_users_delete_handler') }}" method="POST" onsubmit="return confirmDelete()">
+      <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete ALL user flags</button>
+      <input type="hidden" name="_method" value="DELETE">
+    </form>
+	</div>
+  <hr>
+
+  {% endif %}
+
+  {% if usersWithoutFlagsList|length > 0 %}
+  <div class="d-flex flex-column align-items-center justify-content-center h-100">
+		<h4> Users <span class="text-warning">without</span> flags</h4>
+
+    <div class="container">
+      <table class="table table-bordered table-striped">
+          <thead class="thead-light">
+              <tr>
+                  <th class="text-center align-middle">User ID</th>
+                  <th class="text-center align-middle">User Name</th>
+                  <th class="text-center align-middle">User Email</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for user in usersWithoutFlagsList %}
+                  <tr>
+                      <td class="text-center align-middle">{{ user.id }}</td>
+                      <td class="text-center align-middle">{{ user.name }}</td>
+                      <td class="text-center align-middle">{{ user.email }}</td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    </div>  
+	</div>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function confirmDelete() {
+    if (confirm("Are you sure you want to delete all user flags?")) {
+      document.getElementById("deleteUserFlagsForm").submit();
+    }
+  }
+</script>
+{% endblock %}
